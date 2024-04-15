@@ -141,8 +141,10 @@ class BinaryEffect extends HTMLCanvasElement {
       loadImage(this.charactersSrc)
     ]);
 
-    this.width = img.naturalWidth;
-    this.height = img.naturalHeight;
+    if (!this.hasAttribute('width') || !this.hasAttribute('height')) {
+      this.width = img.naturalWidth;
+      this.height = img.naturalHeight;
+    }
 
     gl.useProgram(this.programInfo.program);
     gl.viewport(0, 0, this.width, this.height);

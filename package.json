@@ -18,11 +18,21 @@
     "CustomizedElements",
     "WebGL"
   ],
-  
+  "files": ["README.md", "dist"],
+  "main": "./dist/binary-effect.umd.cjs",
+  "module": "./dist/binary-effect.js",
+  "exports": {
+    ".": {
+      "import": "./dist/binary-effect.js",
+      "require": "./dist/binary-effect.umd.cjs"
+    }
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "build-lib": "vite build --config vite.lib.config.js",
+    "preview": "vite preview",
+    "prepublishOnly": "npm run build-lib"
   },
   "devDependencies": {
     "vite": "^5.2.0"

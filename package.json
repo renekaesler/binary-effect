@@ -1,0 +1,33 @@
+{
+  "name": "binary-effect",
+  "description": "Transform your images into stunning binary art.",
+  "version": "1.0.0",
+  "type": "module",
+  "license": "MIT",
+  "author": {
+    "name": "Rene Kaesler",
+    "email": "renekaesler@gmail.com",
+    "url": "https://renekaesler.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/renekaesler/binary-effect"
+  },
+  "keywords": [
+    "WebComponents",
+    "CustomizedElements",
+    "WebGL"
+  ],
+  
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.2.0"
+  },
+  "dependencies": {
+    "twgl.js": "^5.5.4"
+  }
+}

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+
+    <style>
+      * { box-sizing: border-box; }
+
+      html, body, canvas {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      body {
+        padding: 16px;
+        background: #000;
+      }
+
+      canvas {
+        display: block;
+        object-fit: contain;
+        
+      }
+    </style>
+  </head>
+  <body>
+    <canvas is="binary-effect">
+      <script>
+        Object.assign(document.currentScript.parentElement, {
+          imageSrc: 'logo.png',
+          charactersSrc: 'characters.png',
+          smoothness: 0.2,
+          characterScaling: 0.35,
+          duration: 4000,
+          delay: 1000,
+        });
+      </script>
+    </canvas>
+
+    <script type="module" src="/src/binary-effect.js"></script>
+  </body>
+</html>

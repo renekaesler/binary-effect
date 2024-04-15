@@ -5,7 +5,7 @@ element. Whether you're looking to add a unique touch to your website or create
 captivating visuals for your projects, this customized canvas converts images into 
 striking binary representations.
 
-**Demo**: renekaesler.github.io/binary-effect
+**Demo**: [Binary Effect](renekaesler.github.io/binary-effect)
 
 
 ## Usage
@@ -23,4 +23,8 @@ striking binary representations.
     });
   </script>
 </canvas>
+
+<script type="module">
+  import 'binary-effect';
+</script>
 ```

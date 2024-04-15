@@ -11,14 +11,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/renekaesler/binary-effect"
+    "url": "git+https://github.com/renekaesler/binary-effect.git"
   },
   "keywords": [
     "WebComponents",
     "CustomizedElements",
     "WebGL"
   ],
-  "files": ["README.md", "dist"],
+  "files": [
+    "README.md",
+    "dist"
+  ],
   "main": "./dist/binary-effect.umd.cjs",
   "module": "./dist/binary-effect.js",
   "exports": {
@@ -38,6 +41,7 @@
     "vite": "^5.2.0"
   },
   "dependencies": {
+    "lil-gui": "^0.19.2",
     "twgl.js": "^5.5.4"
   }
 }

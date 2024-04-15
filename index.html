@@ -24,7 +24,7 @@
       canvas {
         display: block;
         object-fit: contain;
-        
+
       }
     </style>
   </head>
@@ -37,11 +37,28 @@
           smoothness: 0.2,
           characterScaling: 0.35,
           duration: 4000,
-          delay: 1000,
+          delay: 500,
         });
       </script>
     </canvas>
 
-    <script type="module" src="/src/binary-effect.js"></script>
+    <script type="module">
+      import GUI from 'lil-gui';
+      import './src/binary-effect.js';
+
+      const gui = new GUI();
+      const canvas = document.querySelector('canvas');
+
+      canvas.reset = () => {
+        canvas.clear();
+        canvas.run();
+      }
+
+      gui.add(canvas, 'smoothness', 0, 1);
+      gui.add(canvas, 'characterScaling', 0.1, 2);
+      gui.add(canvas, 'duration', 0, 10000);
+      gui.add(canvas, 'delay', 0, 10000);
+      gui.add(canvas, 'reset').name('Reset');
+    </script>
   </body>
 </html>

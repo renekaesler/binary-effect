@@ -84,7 +84,7 @@ const fragmentShader = `
     vec4  img   = texture2D(image, fragCoord);
     float alpha = bitMask(cellIdx, gridCoord).r * easeCell(cellIdx);
 
-    gl_FragColor = vec4(img.rgb, alpha);
+    gl_FragColor = vec4(img.rgb, img.a * alpha);
   }
 `;
 
@@ -116,6 +116,7 @@ class BinaryEffect extends HTMLCanvasElement {
 
   clear() {
     const { gl } = this;
+
     gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
   }
 
@@ -148,7 +149,7 @@ class BinaryEffect extends HTMLCanvasElement {
 
     gl.useProgram(this.programInfo.program);
     gl.viewport(0, 0, this.width, this.height);
-    gl.clearColor(0, 0, 0, 1);
+    gl.clearColor(0, 0, 0, 0);
     gl.enable(gl.BLEND);
     gl.blendFuncSeparate(
       gl.SRC_ALPHA,

@@ -1,7 +1,7 @@
 {
   "name": "binary-effect",
   "description": "Transform your images into stunning binary art.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
   "license": "MIT",
   "author": {

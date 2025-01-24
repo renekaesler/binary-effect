@@ -22,7 +22,6 @@ const vertexShader = `
   }
 `;
 
-
 const fragmentShader = `
   precision lowp float;
 
@@ -88,67 +87,54 @@ const fragmentShader = `
   }
 `;
 
+export async function createBinaryEffect(canvas, opts= {}) {
+  let animationId;
+  let startedAt = performance.now();
+  let { duration = 4000, smoothness = 0.2, characterScaling = 1.0 } = opts;
 
-class BinaryEffect extends HTMLCanvasElement {
-  constructor() {
-    super();
+  const gl = canvas.getContext('webgl');
 
-    this.gl = this.getContext('webgl');
-  }
+  const [img, charactersImg] = await Promise.all([
+    loadImage(opts.imageSrc),
+    loadImage(opts.charactersSrc)
+  ]);
 
+  const programInfo = createProgramInfo(gl, [vertexShader, fragmentShader]);
+  const bufferInfo = createBufferInfoFromArrays(gl, {
+    position: {
+      numComponents: 2,
+      data: [
+        1.0,  1.0,
+       -1.0,  1.0,
+        1.0, -1.0,
+       -1.0, -1.0,
+     ]
+    }
+  });
 
-  connectedCallback() {
-    this.run();
-  }
-
-
-  run() {
-    cancelAnimationFrame(this.animationId);
-
-    setTimeout(async () => {
-      await this.#setup();
-
-      this.startedAt = performance.now();
-      this.animationId = requestAnimationFrame(this.#animationLoop);
-    }, this.delay);
-  }
-
-
-  clear() {
-    const { gl } = this;
-
+  function clear() {
     gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
   }
 
+  function animate(time) {
+    const elapsed = Math.max(0, time - startedAt);
+    const progress = Math.min(elapsed / duration, 1);
 
-  async #setup() {
-    const { gl } = this;
+    clear();
+    setUniforms(programInfo, { progress });
 
-    this.programInfo = createProgramInfo(gl, [vertexShader, fragmentShader]);
-    this.bufferInfo = createBufferInfoFromArrays(gl, {
-      position: {
-        numComponents: 2,
-        data: [
-          1.0,  1.0,
-         -1.0,  1.0,
-          1.0, -1.0,
-         -1.0, -1.0
-       ]
-      }
-    });
+    drawBufferInfo(gl, bufferInfo, gl.TRIANGLE_STRIP);
 
-    const [img, charactersImg] = await Promise.all([
-      loadImage(this.imageSrc),
-      loadImage(this.charactersSrc)
-    ]);
-
-    if (!this.hasAttribute('width') || !this.hasAttribute('height')) {
-      this.width = img.naturalWidth;
-      this.height = img.naturalHeight;
+    if (progress < 1) {
+      animationId = requestAnimationFrame(animate)
     }
+  }
 
-    gl.useProgram(this.programInfo.program);
-    gl.viewport(0, 0, this.width, this.height);
+  function run() {
+    canvas.width = img.width;
+    canvas.height = img.height;
+
+    gl.viewport(0, 0, img.width, img.height);
     gl.clearColor(0, 0, 0, 0);
     gl.enable(gl.BLEND);
     gl.blendFuncSeparate(
@@ -158,38 +144,51 @@ class BinaryEffect extends HTMLCanvasElement {
       gl.ONE_MINUS_SRC_ALPHA
     );
 
-    const smoothness = this.smoothness ?? 0.2;
-    const characterScaling = this.characterScaling ?? 1.0
-
-    setBuffersAndAttributes(gl, this.programInfo, this.bufferInfo);
-    setUniforms(this.programInfo, {
+    gl.useProgram(programInfo.program);
+    setBuffersAndAttributes(gl, programInfo, bufferInfo);
+    setUniforms(programInfo, {
       smoothness,
       characterSize: [
-        (charactersImg.width * characterScaling * 0.5 ) / this.width,
-        (charactersImg.height * characterScaling) / this.height
+        (charactersImg.width * characterScaling * 0.5 ) / img.width,
+        (charactersImg.height * characterScaling) / img.height
       ],
       ...createTextures(gl, {
         image: { src: img, flipY: 1 },
         characters: { src: charactersImg,  internalFormat: gl.LUMIANCE }
       })
     });
+
+    cancelAnimationFrame(animationId);
+    startedAt = performance.now();
+    animationId = requestAnimationFrame(animate);
   }
 
+  return {
+    clear,
+    run,
 
-  #animationLoop = (time) => {
-    const { gl } = this;
+    get duration() {
+      return duration;
+    },
 
-    const elapsed = Math.max(0, time - this.startedAt);
-    const progress = Math.min(elapsed / this.duration, 1);
+    set duration(value) {
+      duration = value;
+    },
 
-    this.clear();   
-    setUniforms(this.programInfo, { progress });
-    drawBufferInfo(gl, this.bufferInfo, gl.TRIANGLE_STRIP);
+    get smoothness() {
+      return smoothness;
+    },
 
-    if (progress < 1) {
-      this.animationId = requestAnimationFrame(this.#animationLoop)
-    }
-  }
+    set smoothness(value) {
+      smoothness = value;
+    },
+
+    get characterScaling() {
+      return characterScaling;
+    },
+
+    set characterScaling(value) {
+      characterScaling = value;
+    },
+  };
 }
-
-customElements.define('binary-effect', BinaryEffect, { extends: 'canvas' });

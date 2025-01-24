@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+    <title>Binary Effect</title>
 
     <style>
       * { box-sizing: border-box; }
@@ -29,36 +29,49 @@
     </style>
   </head>
   <body>
-    <canvas width="400" height="400" is="binary-effect">
-      <script>
-        Object.assign(document.currentScript.parentElement, {
-          imageSrc: 'vite.svg',
-          charactersSrc: 'characters.png',
-          smoothness: 0.2,
-          characterScaling: 0.5,
-          duration: 4000,
-          delay: 500,
-        });
-      </script>
-    </canvas>
+    <canvas></canvas>
 
     <script type="module">
       import GUI from 'lil-gui';
-      import './src/binary-effect.js';
+      import { createBinaryEffect } from './src/binary-effect.js';
 
-      const gui = new GUI();
       const canvas = document.querySelector('canvas');
 
-      canvas.reset = () => {
-        canvas.clear();
-        canvas.run();
-      }
+      createBinaryEffect(canvas, {
+        imageSrc: 'vite.svg',
+        charactersSrc: 'characters.png',
+        smoothness: 0.2,
+        characterScaling: 0.5,
+        duration: 4000,
+      }).then(effect => {
+        const demo = {
+          delay: 500,
 
-      gui.add(canvas, 'smoothness', 0, 1);
-      gui.add(canvas, 'characterScaling', 0.1, 2);
-      gui.add(canvas, 'duration', 0, 10000);
-      gui.add(canvas, 'delay', 0, 10000);
-      gui.add(canvas, 'reset').name('Reset');
+          run() {
+            clearTimeout(demo.timeoutHandle)
+            demo.timeoutHandle = setTimeout(effect.run, demo.delay)
+          },
+
+          reset() {
+            effect.clear();
+            demo.run();
+          }
+        }
+
+        effect.reset = () => {
+          effect.clear();
+          effect.run();
+        }
+
+        const gui = new GUI();
+        gui.add(effect, 'smoothness', 0, 1);
+        gui.add(effect, 'characterScaling', 0.1, 2);
+        gui.add(effect, 'duration', 0, 10000);
+        gui.add(demo, 'delay', 0, 10000);
+        gui.add(demo, 'reset').name('Reset');
+
+        demo.run();
+      });
     </script>
   </body>
 </html>

@@ -1,7 +1,7 @@
 {
   "name": "binary-effect",
   "description": "Transform your images into stunning binary art.",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "type": "module",
   "license": "MIT",
   "author": {
@@ -37,11 +37,11 @@
     "preview": "vite preview",
     "prepublishOnly": "npm run build-lib"
   },
-  "devDependencies": {
-    "vite": "^5.2.0"
-  },
   "dependencies": {
-    "lil-gui": "^0.19.2",
+    "lil-gui": "^0.20.0",
     "twgl.js": "^5.5.4"
+  },
+  "devDependencies": {
+    "vite": "^6.0.11"
   }
 }

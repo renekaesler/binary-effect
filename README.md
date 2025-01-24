@@ -25,6 +25,17 @@ striking binary representations.
 </canvas>
 
 <script type="module">
-  import 'binary-effect';
+  import { createBinaryEffect } from 'binary-effect';
+
+  const canvas = document.querySelector('canvas');
+  const effect = await createBinaryEffect(canvas, {
+    imageSrc: 'vite.svg',
+    charactersSrc: 'characters.png',
+    smoothness: 0.2,
+    characterScaling: 0.5,
+    duration: 4000,
+  });
+
+  effect.run();
 </script>
 ```
